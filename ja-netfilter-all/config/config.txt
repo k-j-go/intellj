@@ -1,0 +1,75 @@
+####
+Add to ~/.bash_profile 
+
+___MY_VMOPTIONS_SHELL_FILE="${HOME}/.jetbrains.vmoptions.sh"; if [ -f "${___MY_VMOPTIONS_SHELL_FILE}" ]; then . "${___MY_VMOPTIONS_SHELL_FILE}"; fi
+
+
+.jetbrains.vmoptions.sh
+
+
+
+
+#!/bin/sh
+export IDEA_VM_OPTIONS="/Users/billgql/bucket/ide-extension/ja-netfilter-all/vm$
+export CLION_VM_OPTIONS="/Users/billgql/bucket/ide-extension/ja-netfilter-all/v$
+export PHPSTORM_VM_OPTIONS="/Users/billgql/bucket/ide-extension/ja-netfilter-al$
+export GOLAND_VM_OPTIONS="/Users/billgql/bucket/ide-extension/ja-netfilter-all/$
+export PYCHARM_VM_OPTIONS="/Users/billgql/bucket/ide-extension/ja-netfilter-all$
+export WEBSTORM_VM_OPTIONS="/Users/billgql/bucket/ide-extension/ja-netfilter-al$
+export WEBIDE_VM_OPTIONS="/Users/billgql/bucket/ide-extension/ja-netfilter-all/$
+export RIDER_VM_OPTIONS="/Users/billgql/bucket/ide-extension/ja-netfilter-all/v$
+export DATAGRIP_VM_OPTIONS="/Users/billgql/bucket/ide-extension/ja-netfilter-al$
+export RUBYMINE_VM_OPTIONS="/Users/billgql/bucket/ide-extension/ja-netfilter-al$
+export APPCODE_VM_OPTIONS="/Users/billgql/bucket/ide-extension/ja-netfilter-all$
+export DATASPELL_VM_OPTIONS="/Users/billgql/bucket/ide-extension/ja-netfilter-a$
+export GATEWAY_VM_OPTIONS="/Users/billgql/bucket/ide-extension/ja-netfilter-all$
+export JETBRAINS_CLIENT_VM_OPTIONS="/Users/billgql/bucket/ide-extension/ja-netf$
+export JETBRAINSCLIENT_VM_OPTIONS="/Users/billgql/bucket/ide-extension/ja-netfi$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  GNU nano 2.0.6                   File: .jetbrains.vmoptions.sh                                             
+
+#!/bin/sh
+export IDEA_VM_OPTIONS="/Users/billgql/bucket/ide-extension/ja-netfilter-all/vmoptions/idea.vmoptions"
+export CLION_VM_OPTIONS="/Users/billgql/bucket/ide-extension/ja-netfilter-all/vmoptions/clion.vmoptions"
+export PHPSTORM_VM_OPTIONS="/Users/billgql/bucket/ide-extension/ja-netfilter-all/vmoptions/phpstorm.vmoption$
+export GOLAND_VM_OPTIONS="/Users/billgql/bucket/ide-extension/ja-netfilter-all/vmoptions/goland.vmoptions"
+export PYCHARM_VM_OPTIONS="/Users/billgql/bucket/ide-extension/ja-netfilter-all/vmoptions/pycharm.vmoptions"
+export WEBSTORM_VM_OPTIONS="/Users/billgql/bucket/ide-extension/ja-netfilter-all/vmoptions/webstorm.vmoption$
+export WEBIDE_VM_OPTIONS="/Users/billgql/bucket/ide-extension/ja-netfilter-all/vmoptions/webide.vmoptions"
+export RIDER_VM_OPTIONS="/Users/billgql/bucket/ide-extension/ja-netfilter-all/vmoptions/rider.vmoptions"
+export DATAGRIP_VM_OPTIONS="/Users/billgql/bucket/ide-extension/ja-netfilter-all/vmoptions/datagrip.vmoption$
+export RUBYMINE_VM_OPTIONS="/Users/billgql/bucket/ide-extension/ja-netfilter-all/vmoptions/rubymine.vmoption$
+export APPCODE_VM_OPTIONS="/Users/billgql/bucket/ide-extension/ja-netfilter-all/vmoptions/appcode.vmoptions"
+export DATASPELL_VM_OPTIONS="/Users/billgql/bucket/ide-extension/ja-netfilter-all/vmoptions/dataspell.vmopti$
+export GATEWAY_VM_OPTIONS="/Users/billgql/bucket/ide-extension/ja-netfilter-all/vmoptions/gateway.vmoptions"
+export JETBRAINS_CLIENT_VM_OPTIONS="/Users/billgql/bucket/ide-extension/ja-netfilter-all/vmoptions/jetbrains$
+export JETBRAINSCLIENT_VM_OPTIONS="/Users/billgql/bucket/ide-extension/ja-netfilter-all/vmoptions/jetbrainsc$

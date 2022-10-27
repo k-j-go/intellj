@@ -1,0 +1,5 @@
+Mkdir folder
+Cop jar there
+
+jar -xvf ja-netfilter.jar
+jar cvfm a.jar folder/META-INF/MANIFEST.MF -C folder/ .
