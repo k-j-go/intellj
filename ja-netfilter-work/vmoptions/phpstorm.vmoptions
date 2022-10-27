@@ -19,4 +19,4 @@
 --add-opens=java.base/jdk.internal.org.objectweb.asm=ALL-UNNAMED
 --add-opens=java.base/jdk.internal.org.objectweb.asm.tree=ALL-UNNAMED
 
--javaagent:/Users/billgql/bucket/ide-extension/ja-netfilter-all/ja-netfilter.jar=jetbrains
+-javaagent:/Users/billgql/bucket/ide-extension/ja-netfilter-work/ja-netfilter.jar=jetbrains

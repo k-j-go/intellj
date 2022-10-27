@@ -5,7 +5,7 @@ Agent-Class: com.janetfilter.core.Launcher
 Can-Redefine-Classes: true
 Can-Retransform-Classes: true
 Can-Set-Native-Method-Prefix: true
-Created-By: Apache Maven 3.8.4
+Created-By: Apache Maven 3.5.3
 Build-Jdk: 1.8.0_261
 Main-Class: com.janetfilter.core.Launcher
 
