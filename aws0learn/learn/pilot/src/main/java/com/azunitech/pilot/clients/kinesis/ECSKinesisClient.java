@@ -1,7 +1,6 @@
 package com.azunitech.pilot.clients.kinesis;
 
 import com.azunitech.pilot.clients.kinesis.models.Address;
-import com.azunitech.pilot.clients.s3.ECSS3Client;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.SdkBytes;
@@ -9,7 +8,6 @@ import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.kinesis.KinesisClient;
 import software.amazon.awssdk.services.kinesis.model.*;
-import software.amazon.awssdk.services.kinesis.model.Record;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -22,14 +20,14 @@ public class ECSKinesisClient {
     KinesisClient kinesisClient;
 
     public ECSKinesisClient create(Region region, URI endpoint) throws URISyntaxException {
-        AwsBasicCredentials awsCreds = AwsBasicCredentials.create(
-                "local",
+        AwsBasicCredentials awsCreds = AwsBasicCredentials.create("local",
                 "local");
         kinesisClient = KinesisClient.builder()
                 .region(region)
                 .endpointOverride(endpoint)
                 .credentialsProvider(StaticCredentialsProvider.create(awsCreds))
-                .httpClient(UrlConnectionHttpClient.builder().build())
+                .httpClient(UrlConnectionHttpClient.builder()
+                        .build())
                 .build();
         return this;
     }
@@ -58,7 +56,10 @@ public class ECSKinesisClient {
 
             DescribeStreamResponse describeStreamResponse = kinesisClient.describeStream(describeStreamRequest);
 
-            if (!describeStreamResponse.streamDescription().streamStatus().toString().equals("ACTIVE")) {
+            if (!describeStreamResponse.streamDescription()
+                    .streamStatus()
+                    .toString()
+                    .equals("ACTIVE")) {
                 System.err.println("Stream " + streamName + " is not active. Please wait a few moments and try again.");
                 System.exit(1);
             }
@@ -84,12 +85,15 @@ public class ECSKinesisClient {
         DescribeStreamResponse streamRes;
         do {
             streamRes = kinesisClient.describeStream(describeStreamRequest);
-            shards.addAll(streamRes.streamDescription().shards());
+            shards.addAll(streamRes.streamDescription()
+                    .shards());
 
             if (shards.size() > 0) {
-                lastShardId = shards.get(shards.size() - 1).shardId();
+                lastShardId = shards.get(shards.size() - 1)
+                        .shardId();
             }
-        } while (streamRes.streamDescription().hasMoreShards());
+        } while (streamRes.streamDescription()
+                .hasMoreShards());
 
         GetShardIteratorRequest itReq = GetShardIteratorRequest.builder()
                 .streamName(streamName)
@@ -118,7 +122,9 @@ public class ECSKinesisClient {
         // Print records
         for (Record record : records) {
             SdkBytes byteBuffer = record.data();
-            System.out.printf("Seq No: %s - %s%n", record.sequenceNumber(), new String(byteBuffer.asByteArray()));
+            System.out.printf("Seq No: %s - %s%n",
+                    record.sequenceNumber(),
+                    new String(byteBuffer.asByteArray()));
         }
     }
 
@@ -164,7 +170,8 @@ public class ECSKinesisClient {
                     .build();
 
             RegisterStreamConsumerResponse resp = kinesisClient.registerStreamConsumer(regCon);
-            return resp.consumer().consumerARN();
+            return resp.consumer()
+                    .consumerARN();
 
         } catch (KinesisException e) {
             System.err.println(e.getMessage());
@@ -182,37 +189,37 @@ public class ECSKinesisClient {
         private Region region;
         private URI endPointUri;
 
-        public ECSKinesisClientBuilder setRegion(Region region) {
+        public ECSKinesisClientBuilder region(Region region) {
             this.region = region;
             return this;
         }
 
-        public ECSKinesisClientBuilder setEndPoint(String endPoint) throws URISyntaxException {
+        public ECSKinesisClientBuilder endPoint(String endPoint) throws URISyntaxException {
             if (checkValidate.apply(endPoint)) {
-                throw new URISyntaxException(endPoint, "invalid");
+                throw new URISyntaxException(endPoint,
+                        "invalid");
             }
-            this.endPointUri = new URI(String.format("http://%s:4566", endPoint));
+            this.endPointUri = new URI(String.format("http://%s:4566",
+                    endPoint));
             return this;
         }
 
-        public ECSKinesisClientBuilder setLocalStackEndPoint() throws URISyntaxException {
+        public ECSKinesisClientBuilder localStackEndPoint() throws URISyntaxException {
             String host = System.getenv("LOCALSTACK_HOSTNAME");
-            return setEndPoint(host);
+            return endPoint(host);
         }
 
         public ECSKinesisClient build() throws URISyntaxException {
             ECSKinesisClient client = new ECSKinesisClient();
-            return client.create(this.region, this.endPointUri);
+            return client.create(this.region,
+                    this.endPointUri);
         }
     }
 
     static java.util.function.Function<String, Boolean> checkValidate = x -> {
-        final String HOST_PATTERN =
-                "^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9])\\.)*" +
-                        "([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9-]*[A-Za-z0-9])$";
+        final String HOST_PATTERN = "^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9])\\.)*" + "([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9-]*[A-Za-z0-9])$";
 
-        final String PORT_PATTERN =
-                "^\\d{1,5}$";
+        final String PORT_PATTERN = "^\\d{1,5}$";
 
         final Pattern HOST_REGEX_PATTERN = Pattern.compile(HOST_PATTERN);
         final Pattern PORT_REGEX_PATTERN = Pattern.compile(PORT_PATTERN);
@@ -225,11 +232,13 @@ public class ECSKinesisClient {
         String host = parts[0];
         String port = parts[1];
 
-        if (!HOST_REGEX_PATTERN.matcher(host).matches()) {
+        if (!HOST_REGEX_PATTERN.matcher(host)
+                .matches()) {
             return false;
         }
 
-        if (!PORT_REGEX_PATTERN.matcher(port).matches()) {
+        if (!PORT_REGEX_PATTERN.matcher(port)
+                .matches()) {
             return false;
         }
         return true;

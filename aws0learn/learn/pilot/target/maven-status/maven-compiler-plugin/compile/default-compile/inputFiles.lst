@@ -1,0 +1,5 @@
+/Users/guoqiangli/projects/pilot/aws/localstack/aws0learn/learn/pilot/src/main/java/com/azunitech/pilot/clients/sns/ECSSnsClient.java
+/Users/guoqiangli/projects/pilot/aws/localstack/aws0learn/learn/pilot/src/main/java/com/azunitech/pilot/clients/dynamodb/ECSDynamoDBClient.java
+/Users/guoqiangli/projects/pilot/aws/localstack/aws0learn/learn/pilot/src/main/java/com/azunitech/pilot/clients/sqs/ECSSqsClient.java
+/Users/guoqiangli/projects/pilot/aws/localstack/aws0learn/learn/pilot/src/main/java/com/azunitech/pilot/HandlerString.java
+/Users/guoqiangli/projects/pilot/aws/localstack/aws0learn/learn/pilot/src/main/java/com/azunitech/pilot/clients/s3/ECSS3Client.java

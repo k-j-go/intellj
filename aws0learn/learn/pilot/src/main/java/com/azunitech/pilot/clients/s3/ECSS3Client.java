@@ -133,12 +133,12 @@ public class ECSS3Client {
         private Region region;
         private URI endPointUri;
 
-        public ECSS3ClientBuilder setRegion(Region region) {
+        public ECSS3ClientBuilder region(Region region) {
             this.region = region;
             return this;
         }
 
-        public ECSS3ClientBuilder setEndPoint(String endPoint) throws URISyntaxException {
+        public ECSS3ClientBuilder endPoint(String endPoint) throws URISyntaxException {
             if (checkValidate.apply(endPoint)) {
                 throw new URISyntaxException(endPoint, "invalid");
             }
@@ -146,9 +146,9 @@ public class ECSS3Client {
             return this;
         }
 
-        public ECSS3ClientBuilder setLocalStackEndPoint() throws URISyntaxException {
+        public ECSS3ClientBuilder localStackEndPoint() throws URISyntaxException {
             String host = System.getenv("LOCALSTACK_HOSTNAME");
-            return setEndPoint(host);
+            return endPoint(host);
         }
 
         public ECSS3Client build() {

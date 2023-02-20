@@ -44,8 +44,8 @@ public class S3EventHandler implements RequestHandler<S3Event, Integer> {
 
         try {
             ECSS3Client ecss3Client = ECSS3Client.builder()
-                    .setRegion(Region.US_EAST_1)
-                    .setLocalStackEndPoint()
+                    .region(Region.US_EAST_1)
+                    .localStackEndPoint()
                     .build();
             ecss3Client.listBucketObjects("mybucket");
             ecss3Client.getObjectBytes(bucket, key)
@@ -60,8 +60,8 @@ public class S3EventHandler implements RequestHandler<S3Event, Integer> {
 
         try {
             ECSKinesisClient ecsKinesisClient = ECSKinesisClient.builder()
-                    .setRegion(Region.US_EAST_1)
-                    .setLocalStackEndPoint()
+                    .region(Region.US_EAST_1)
+                    .localStackEndPoint()
                     .build();
             ecsKinesisClient.createStream("mytopic");
             Faker faker = new Faker();
@@ -81,8 +81,8 @@ public class S3EventHandler implements RequestHandler<S3Event, Integer> {
 
         try {
             ECSSnsClient ecsSnsClient = ECSSnsClient.builder()
-                    .setRegion(Region.US_EAST_1)
-                    .setLocalStackEndPoint()
+                    .region(Region.US_EAST_1)
+                    .localStackEndPoint()
                     .build();
             if (!ecsSnsClient.checkSNSTopicExists("mytopic")) {
                 String arn = ecsSnsClient.createTopic("mytopic");
@@ -95,8 +95,8 @@ public class S3EventHandler implements RequestHandler<S3Event, Integer> {
 
         try {
             ECSSqsClient sqsClient = ECSSqsClient.builder()
-                    .setRegion(Region.US_EAST_1)
-                    .setLocalStackEndPoint()
+                    .region(Region.US_EAST_1)
+                    .localStackEndPoint()
                     .build();
             String url = sqsClient.createQueue("mysqs");
             logger.info("mysqs url {}", url);
@@ -107,8 +107,8 @@ public class S3EventHandler implements RequestHandler<S3Event, Integer> {
 
         try {
             ECSDynamoDBClient dynamoDBClient = ECSDynamoDBClient.builder()
-                    .setRegion(Region.US_EAST_1)
-                    .setLocalStackEndPoint()
+                    .region(Region.US_EAST_1)
+                    .localStackEndPoint()
                     .build();
             String r = dynamoDBClient.createTable("testdb", "id");
             logger.info("testdb {}", r);

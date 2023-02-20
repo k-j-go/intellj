@@ -3,7 +3,6 @@ package com.azunitech.pilot.clients.sns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
-import software.amazon.awssdk.auth.credentials.AwsCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
 import software.amazon.awssdk.regions.Region;
@@ -120,12 +119,12 @@ public class ECSSnsClient {
         private Region region;
         private URI endPointUri;
 
-        public ECSSnsClientBuilder setRegion(Region region) {
+        public ECSSnsClientBuilder region(Region region) {
             this.region = region;
             return this;
         }
 
-        public ECSSnsClientBuilder setEndPoint(String endPoint) throws URISyntaxException {
+        public ECSSnsClientBuilder endPoint(String endPoint) throws URISyntaxException {
             if (checkValidate.apply(endPoint)) {
                 throw new URISyntaxException(endPoint, "invalid");
             }
@@ -133,9 +132,9 @@ public class ECSSnsClient {
             return this;
         }
 
-        public ECSSnsClientBuilder setLocalStackEndPoint() throws URISyntaxException {
+        public ECSSnsClientBuilder localStackEndPoint() throws URISyntaxException {
             String host = System.getenv("LOCALSTACK_HOSTNAME");
-            return setEndPoint(host);
+            return endPoint(host);
         }
 
         public ECSSnsClient build() throws URISyntaxException {

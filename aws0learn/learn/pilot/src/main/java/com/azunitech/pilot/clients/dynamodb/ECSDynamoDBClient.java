@@ -1,7 +1,6 @@
 package com.azunitech.pilot.clients.dynamodb;
 
 import com.azunitech.pilot.clients.dynamodb.models.Customer;
-import com.azunitech.pilot.clients.kinesis.ECSKinesisClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
@@ -34,6 +33,7 @@ public class ECSDynamoDBClient {
     private DynamoDbClient dynamoDbClient;
 
     private DynamoDbEnhancedClient enhancedClient;
+
     public ECSDynamoDBClient create(Region region, URI endPointUri) throws URISyntaxException {
         AwsBasicCredentials awsCreds = AwsBasicCredentials.create(
                 "local",
@@ -42,7 +42,8 @@ public class ECSDynamoDBClient {
                 .region(region)
                 .endpointOverride(endPointUri)
                 .credentialsProvider(StaticCredentialsProvider.create(awsCreds))
-                .httpClient(UrlConnectionHttpClient.builder().build())
+                .httpClient(UrlConnectionHttpClient.builder()
+                        .build())
                 .build();
 
         enhancedClient = DynamoDbEnhancedClient.builder()
@@ -79,12 +80,16 @@ public class ECSDynamoDBClient {
 
             // Wait until the Amazon DynamoDB table is created.
             WaiterResponse<DescribeTableResponse> waiterResponse = dbWaiter.waitUntilTableExists(tableRequest);
-            waiterResponse.matched().response().ifPresent(System.out::println);
-            newTable = response.tableDescription().tableName();
+            waiterResponse.matched()
+                    .response()
+                    .ifPresent(System.out::println);
+            newTable = response.tableDescription()
+                    .tableName();
             return newTable;
 
         } catch (DynamoDbException e) {
-            logger.error(e.awsErrorDetails().errorMessage());
+            logger.error(e.awsErrorDetails()
+                    .errorMessage());
         }
         return "";
     }
@@ -110,14 +115,16 @@ public class ECSDynamoDBClient {
                                 .build())
                 .provisionedThroughput(ProvisionedThroughput.builder()
                         .readCapacityUnits(10L)
-                        .writeCapacityUnits(10L).build())
+                        .writeCapacityUnits(10L)
+                        .build())
                 .tableName(tableName)
                 .build();
 
         String tableId = "";
         try {
             CreateTableResponse result = dynamoDbClient.createTable(request);
-            tableId = result.tableDescription().tableId();
+            tableId = result.tableDescription()
+                    .tableId();
             return tableId;
         } catch (DynamoDbException e) {
             System.err.println(e.getMessage());
@@ -138,7 +145,8 @@ public class ECSDynamoDBClient {
                 Set<String> keys = item.keySet();
                 for (String key : keys) {
                     System.out.println("The key name is " + key + "\n");
-                    System.out.println("The value is " + item.get(key).s());
+                    System.out.println("The value is " + item.get(key)
+                            .s());
                 }
             }
 
@@ -148,27 +156,30 @@ public class ECSDynamoDBClient {
         }
     }
 
-    public void listAllTables(){
+    public void listAllTables() {
 
         boolean moreTables = true;
         String lastName = null;
 
-        while(moreTables) {
+        while (moreTables) {
             try {
                 ListTablesResponse response = null;
                 if (lastName == null) {
-                    ListTablesRequest request = ListTablesRequest.builder().build();
+                    ListTablesRequest request = ListTablesRequest.builder()
+                            .build();
                     response = dynamoDbClient.listTables(request);
                 } else {
                     ListTablesRequest request = ListTablesRequest.builder()
-                            .exclusiveStartTableName(lastName).build();
+                            .exclusiveStartTableName(lastName)
+                            .build();
                     response = dynamoDbClient.listTables(request);
                 }
 
                 List<String> tableNames = response.tableNames();
                 if (tableNames.size() > 0) {
                     for (String curName : tableNames) {
-                        System.out.format("* %s\n", curName);
+                        System.out.format("* %s\n",
+                                curName);
                     }
                 } else {
                     System.out.println("No tables found!");
@@ -189,9 +200,10 @@ public class ECSDynamoDBClient {
     }
 
 
-    public void enhanced_CreateTable () {
+    public void enhanced_CreateTable() {
         // Create a DynamoDbTable object
-        DynamoDbTable<Customer> customerTable = enhancedClient.table("Customer", TableSchema.fromBean(Customer.class));
+        DynamoDbTable<Customer> customerTable = enhancedClient.table("Customer",
+                TableSchema.fromBean(Customer.class));
         // Create the table
         customerTable.createTable(builder -> builder
                 .provisionedThroughput(b -> b
@@ -204,18 +216,22 @@ public class ECSDynamoDBClient {
 
         try (DynamoDbWaiter waiter = DynamoDbWaiter.create()) { // DynamoDbWaiter is Autocloseable
             ResponseOrException<DescribeTableResponse> response = waiter
-                    .waitUntilTableExists(builder -> builder.tableName("Customer").build())
+                    .waitUntilTableExists(builder -> builder.tableName("Customer")
+                            .build())
                     .matched();
-            DescribeTableResponse tableDescription = response.response().orElseThrow(
-                    () -> new RuntimeException("Customer table was not created."));
+            DescribeTableResponse tableDescription = response.response()
+                    .orElseThrow(
+                            () -> new RuntimeException("Customer table was not created."));
             // The actual error can be inspected in response.exception()
-            logger.info(tableDescription.table().tableName() + " was created.");
+            logger.info(tableDescription.table()
+                    .tableName() + " was created.");
         }
     }
 
     public void enhanced_putRecord() {
         try {
-            DynamoDbTable<Customer> custTable = enhancedClient.table("Customer", TableSchema.fromBean(Customer.class));
+            DynamoDbTable<Customer> custTable = enhancedClient.table("Customer",
+                    TableSchema.fromBean(Customer.class));
 
             // Create an Instant value.
             LocalDate localDate = LocalDate.parse("2020-04-07");
@@ -227,7 +243,7 @@ public class ECSDynamoDBClient {
             custRecord.setCustName("Tom red");
             custRecord.setId("id101");
             custRecord.setEmail("tred@noserver.com");
-            custRecord.setRegistrationDate(instant) ;
+            custRecord.setRegistrationDate(instant);
 
             // Put the customer data into an Amazon DynamoDB table.
             custTable.putItem(custRecord);
@@ -239,7 +255,7 @@ public class ECSDynamoDBClient {
         System.out.println("Customer data added to the table with id id101");
     }
 
-    public static ECSDynamoDBClientBuilder builder(){
+    public static ECSDynamoDBClientBuilder builder() {
         return new ECSDynamoDBClientBuilder();
     }
 
@@ -248,27 +264,30 @@ public class ECSDynamoDBClient {
         private Region region;
         private URI endPointUri;
 
-        public ECSDynamoDBClientBuilder setRegion(Region region) {
+        public ECSDynamoDBClientBuilder region(Region region) {
             this.region = region;
             return this;
         }
 
-        public ECSDynamoDBClientBuilder setEndPoint(String endPoint) throws URISyntaxException {
+        public ECSDynamoDBClientBuilder endPoint(String endPoint) throws URISyntaxException {
             if (checkValidate.apply(endPoint)) {
-                throw new URISyntaxException(endPoint, "invalid");
+                throw new URISyntaxException(endPoint,
+                        "invalid");
             }
-            this.endPointUri = new URI(String.format("http://%s:4566", endPoint));
+            this.endPointUri = new URI(String.format("http://%s:4566",
+                    endPoint));
             return this;
         }
 
-        public ECSDynamoDBClientBuilder setLocalStackEndPoint() throws URISyntaxException {
+        public ECSDynamoDBClientBuilder localStackEndPoint() throws URISyntaxException {
             String host = System.getenv("LOCALSTACK_HOSTNAME");
-            return setEndPoint(host);
+            return endPoint(host);
         }
 
         public ECSDynamoDBClient build() throws URISyntaxException {
             ECSDynamoDBClient client = new ECSDynamoDBClient();
-            return client.create(this.region, this.endPointUri);
+            return client.create(this.region,
+                    this.endPointUri);
         }
     }
 
@@ -291,11 +310,13 @@ public class ECSDynamoDBClient {
         String host = parts[0];
         String port = parts[1];
 
-        if (!HOST_REGEX_PATTERN.matcher(host).matches()) {
+        if (!HOST_REGEX_PATTERN.matcher(host)
+                .matches()) {
             return false;
         }
 
-        if (!PORT_REGEX_PATTERN.matcher(port).matches()) {
+        if (!PORT_REGEX_PATTERN.matcher(port)
+                .matches()) {
             return false;
         }
         return true;

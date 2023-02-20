@@ -3,6 +3,7 @@
 
 
 #### Start
+[awssdk](https://github.com/awsdocs/aws-doc-sdk-examples)
 [](https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/setup-project-maven.html)
 ```shell
 mvn -B archetype:generate \
@@ -62,4 +63,19 @@ aws s3 cp pom.xml s3://mybucket/samplefile.txt --endpoint-url http://localhost:4
 ```shell
 awslocal lambda invoke --function-name examplelambda — cli-binary-format raw-in-base64-out --payload file://payload.json output.txt
 awslocal lambda invoke --function-name examplelambda --payload '{"name": "John", "age": 30}' output.txt
+```
+
+
+
+```shell
+mvn archetype:generate \
+-DarchetypeGroupId=software.amazon.awssdk \
+-DarchetypeArtifactId=archetype-app-quickstart \
+-DarchetypeVersion=2.16.1 \
+-DnativeImage=true \
+-DhttpClient=apache-client \
+-Dservice=s3 \
+-DgroupId=com.azunitech.mynativeimageapp \
+-DartifactId=mynativeimageapp \
+-DinteractiveMode=false
 ```

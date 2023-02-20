@@ -189,12 +189,12 @@ public class ECSSqsClient {
         private Region region;
         private URI endPointUri;
 
-        public ECSSqsClientBuilder setRegion(Region region) {
+        public ECSSqsClientBuilder region(Region region) {
             this.region = region;
             return this;
         }
 
-        public ECSSqsClientBuilder setEndPoint(String endPoint) throws URISyntaxException {
+        public ECSSqsClientBuilder endPoint(String endPoint) throws URISyntaxException {
             if (checkValidate.apply(endPoint)) {
                 throw new URISyntaxException(endPoint, "invalid");
             }
@@ -202,9 +202,9 @@ public class ECSSqsClient {
             return this;
         }
 
-        public ECSSqsClientBuilder setLocalStackEndPoint() throws URISyntaxException {
+        public ECSSqsClientBuilder localStackEndPoint() throws URISyntaxException {
             String host = System.getenv("LOCALSTACK_HOSTNAME");
-            return setEndPoint(host);
+            return endPoint(host);
         }
 
         public ECSSqsClient build() throws URISyntaxException {
