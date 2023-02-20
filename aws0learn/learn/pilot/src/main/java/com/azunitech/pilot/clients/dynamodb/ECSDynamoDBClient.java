@@ -1,10 +1,16 @@
 package com.azunitech.pilot.clients.dynamodb;
 
+import com.azunitech.pilot.clients.dynamodb.models.Customer;
+import com.azunitech.pilot.clients.kinesis.ECSKinesisClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.core.internal.waiters.ResponseOrException;
 import software.amazon.awssdk.core.waiters.WaiterResponse;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
+import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
@@ -13,31 +19,37 @@ import software.amazon.awssdk.services.dynamodb.waiters.DynamoDbWaiter;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 public class ECSDynamoDBClient {
     private static final Logger logger = LoggerFactory.getLogger(ECSDynamoDBClient.class);
 
     private DynamoDbClient dynamoDbClient;
 
-    public void process() throws URISyntaxException {
+    private DynamoDbEnhancedClient enhancedClient;
+    public ECSDynamoDBClient create(Region region, URI endPointUri) throws URISyntaxException {
         AwsBasicCredentials awsCreds = AwsBasicCredentials.create(
                 "local",
                 "local");
-        String host = System.getenv("LOCALSTACK_HOSTNAME");
-        String endpoint = String.format("http://%s:4566", host);
-        logger.info("******************" + host);
-
-        Region region = Region.US_EAST_1;
         dynamoDbClient = DynamoDbClient.builder()
                 .region(region)
-                .endpointOverride(new URI(endpoint))
+                .endpointOverride(endPointUri)
                 .credentialsProvider(StaticCredentialsProvider.create(awsCreds))
                 .httpClient(UrlConnectionHttpClient.builder().build())
                 .build();
 
+        enhancedClient = DynamoDbEnhancedClient.builder()
+                .dynamoDbClient(dynamoDbClient)
+                .build();
+
+        return this;
     }
 
     public String createTable(String tableName, String key) {
@@ -52,8 +64,8 @@ public class ECSDynamoDBClient {
                         .keyType(KeyType.HASH)
                         .build())
                 .provisionedThroughput(ProvisionedThroughput.builder()
-                        .readCapacityUnits(new Long(10))
-                        .writeCapacityUnits(new Long(10))
+                        .readCapacityUnits(10L)
+                        .writeCapacityUnits(10L)
                         .build())
                 .tableName(tableName)
                 .build();
@@ -72,8 +84,7 @@ public class ECSDynamoDBClient {
             return newTable;
 
         } catch (DynamoDbException e) {
-            System.err.println(e.getMessage());
-            System.exit(1);
+            logger.error(e.awsErrorDetails().errorMessage());
         }
         return "";
     }
@@ -98,8 +109,8 @@ public class ECSDynamoDBClient {
                                 .keyType(KeyType.RANGE)
                                 .build())
                 .provisionedThroughput(ProvisionedThroughput.builder()
-                        .readCapacityUnits(new Long(10))
-                        .writeCapacityUnits(new Long(10)).build())
+                        .readCapacityUnits(10L)
+                        .writeCapacityUnits(10L).build())
                 .tableName(tableName)
                 .build();
 
@@ -176,4 +187,117 @@ public class ECSDynamoDBClient {
         }
         System.out.println("\nDone!");
     }
+
+
+    public void enhanced_CreateTable () {
+        // Create a DynamoDbTable object
+        DynamoDbTable<Customer> customerTable = enhancedClient.table("Customer", TableSchema.fromBean(Customer.class));
+        // Create the table
+        customerTable.createTable(builder -> builder
+                .provisionedThroughput(b -> b
+                        .readCapacityUnits(10L)
+                        .writeCapacityUnits(10L)
+                        .build())
+        );
+
+        logger.info("Waiting for table creation...");
+
+        try (DynamoDbWaiter waiter = DynamoDbWaiter.create()) { // DynamoDbWaiter is Autocloseable
+            ResponseOrException<DescribeTableResponse> response = waiter
+                    .waitUntilTableExists(builder -> builder.tableName("Customer").build())
+                    .matched();
+            DescribeTableResponse tableDescription = response.response().orElseThrow(
+                    () -> new RuntimeException("Customer table was not created."));
+            // The actual error can be inspected in response.exception()
+            logger.info(tableDescription.table().tableName() + " was created.");
+        }
+    }
+
+    public void enhanced_putRecord() {
+        try {
+            DynamoDbTable<Customer> custTable = enhancedClient.table("Customer", TableSchema.fromBean(Customer.class));
+
+            // Create an Instant value.
+            LocalDate localDate = LocalDate.parse("2020-04-07");
+            LocalDateTime localDateTime = localDate.atStartOfDay();
+            Instant instant = localDateTime.toInstant(ZoneOffset.UTC);
+
+            // Populate the Table.
+            Customer custRecord = new Customer();
+            custRecord.setCustName("Tom red");
+            custRecord.setId("id101");
+            custRecord.setEmail("tred@noserver.com");
+            custRecord.setRegistrationDate(instant) ;
+
+            // Put the customer data into an Amazon DynamoDB table.
+            custTable.putItem(custRecord);
+
+        } catch (DynamoDbException e) {
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
+        System.out.println("Customer data added to the table with id id101");
+    }
+
+    public static ECSDynamoDBClientBuilder builder(){
+        return new ECSDynamoDBClientBuilder();
+    }
+
+    public static class ECSDynamoDBClientBuilder {
+
+        private Region region;
+        private URI endPointUri;
+
+        public ECSDynamoDBClientBuilder setRegion(Region region) {
+            this.region = region;
+            return this;
+        }
+
+        public ECSDynamoDBClientBuilder setEndPoint(String endPoint) throws URISyntaxException {
+            if (checkValidate.apply(endPoint)) {
+                throw new URISyntaxException(endPoint, "invalid");
+            }
+            this.endPointUri = new URI(String.format("http://%s:4566", endPoint));
+            return this;
+        }
+
+        public ECSDynamoDBClientBuilder setLocalStackEndPoint() throws URISyntaxException {
+            String host = System.getenv("LOCALSTACK_HOSTNAME");
+            return setEndPoint(host);
+        }
+
+        public ECSDynamoDBClient build() throws URISyntaxException {
+            ECSDynamoDBClient client = new ECSDynamoDBClient();
+            return client.create(this.region, this.endPointUri);
+        }
+    }
+
+    static java.util.function.Function<String, Boolean> checkValidate = x -> {
+        final String HOST_PATTERN =
+                "^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9])\\.)*" +
+                        "([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9-]*[A-Za-z0-9])$";
+
+        final String PORT_PATTERN =
+                "^\\d{1,5}$";
+
+        final Pattern HOST_REGEX_PATTERN = Pattern.compile(HOST_PATTERN);
+        final Pattern PORT_REGEX_PATTERN = Pattern.compile(PORT_PATTERN);
+
+        String[] parts = x.split(":");
+        if (parts.length != 2) {
+            return false;
+        }
+
+        String host = parts[0];
+        String port = parts[1];
+
+        if (!HOST_REGEX_PATTERN.matcher(host).matches()) {
+            return false;
+        }
+
+        if (!PORT_REGEX_PATTERN.matcher(port).matches()) {
+            return false;
+        }
+        return true;
+    };
 }

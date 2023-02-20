@@ -3,6 +3,7 @@ package com.azunitech.pilot;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.S3Event;
+import com.azunitech.pilot.clients.dynamodb.ECSDynamoDBClient;
 import com.azunitech.pilot.clients.kinesis.ECSKinesisClient;
 import com.azunitech.pilot.clients.kinesis.models.Address;
 import com.azunitech.pilot.clients.s3.ECSS3Client;
@@ -20,23 +21,37 @@ import java.net.URISyntaxException;
 
 public class S3EventHandler implements RequestHandler<S3Event, Integer> {
     private static final Logger logger = LoggerFactory.getLogger(S3EventHandler.class);
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    Gson gson = new GsonBuilder().setPrettyPrinting()
+            .create();
 
     @Override
     public Integer handleRequest(S3Event s3Event, Context context) {
-        String bucket = s3Event.getRecords().get(0).getS3().getBucket().getName();
-        String key = s3Event.getRecords().get(0).getS3().getObject().getKey();
+        String bucket = s3Event.getRecords()
+                .get(0)
+                .getS3()
+                .getBucket()
+                .getName();
+        String key = s3Event.getRecords()
+                .get(0)
+                .getS3()
+                .getObject()
+                .getKey();
 
-        GetObjectRequest get = GetObjectRequest.builder().bucket(bucket)
+        GetObjectRequest get = GetObjectRequest.builder()
+                .bucket(bucket)
                 .key(key)
                 .build();
 
         try {
-            ECSS3Client ecss3Client = ECSS3Client.builder().setRegion(Region.US_EAST_1).setLocalStackEndPoint().build();
+            ECSS3Client ecss3Client = ECSS3Client.builder()
+                    .setRegion(Region.US_EAST_1)
+                    .setLocalStackEndPoint()
+                    .build();
             ecss3Client.listBucketObjects("mybucket");
-            ecss3Client.getObjectBytes(bucket, key).ifPresent( x -> {
-                logger.info(new String(x));
-            });
+            ecss3Client.getObjectBytes(bucket, key)
+                    .ifPresent(x -> {
+                        logger.info(new String(x));
+                    });
             ecss3Client.createBucket("target");
             ecss3Client.copyBucketObject(bucket, key, "target");
         } catch (URISyntaxException e) {
@@ -44,7 +59,10 @@ public class S3EventHandler implements RequestHandler<S3Event, Integer> {
         }
 
         try {
-            ECSKinesisClient ecsKinesisClient = ECSKinesisClient.builder().setRegion(Region.US_EAST_1).setLocalStackEndPoint().build();
+            ECSKinesisClient ecsKinesisClient = ECSKinesisClient.builder()
+                    .setRegion(Region.US_EAST_1)
+                    .setLocalStackEndPoint()
+                    .build();
             ecsKinesisClient.createStream("mytopic");
             Faker faker = new Faker();
             com.github.javafaker.Address address = faker.address();
@@ -86,6 +104,22 @@ public class S3EventHandler implements RequestHandler<S3Event, Integer> {
         } catch (URISyntaxException e) {
             logger.error(e.getMessage());
         }
+
+        try {
+            ECSDynamoDBClient dynamoDBClient = ECSDynamoDBClient.builder()
+                    .setRegion(Region.US_EAST_1)
+                    .setLocalStackEndPoint()
+                    .build();
+            String r = dynamoDBClient.createTable("testdb", "id");
+            logger.info("testdb {}", r);
+            r = dynamoDBClient.createTableComKey("testcombodb");
+            logger.info("testcombodb {}", r);
+            //dynamoDBClient.enhanced_CreateTable();
+            //dynamoDBClient.enhanced_putRecord();
+        } catch (URISyntaxException e) {
+            logger.error(e.getMessage());
+        }
+
 
         return context.getRemainingTimeInMillis();
     }
