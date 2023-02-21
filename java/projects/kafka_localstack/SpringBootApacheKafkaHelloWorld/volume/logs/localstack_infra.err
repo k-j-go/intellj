@@ -1,0 +1,42 @@
+2023-02-08T06:08:17.849  WARN --- [-functhread5] hypercorn.error            : ASGI Framework Lifespan error, continuing without Lifespan support
+2023-02-08T06:08:17.849  WARN --- [-functhread5] hypercorn.error            : ASGI Framework Lifespan error, continuing without Lifespan support
+2023-02-08T06:08:18.086  INFO --- [-functhread5] hypercorn.error            : Running on https://0.0.0.0:4566 (CTRL + C to quit)
+2023-02-08T06:08:18.086  INFO --- [-functhread5] hypercorn.error            : Running on https://0.0.0.0:4566 (CTRL + C to quit)
+2023-02-08T06:08:18.215  INFO --- [  MainThread] localstack.utils.bootstrap : Execution of "start_runtime_components" took 2555.46ms
+2023-02-08T06:08:19.156  INFO --- [  MainThread] localstack.utils.bootstrap : Execution of "_resolve_api_provider_specs" took 937.51ms
+2023-02-08T06:08:19.156  INFO --- [  MainThread] localstack.utils.bootstrap : Execution of "preload_services" took 938.08ms
+2023-02-09T07:04:20.612 ERROR --- [-functhread5] localstack.http.asgi       : Error while trying to schedule execution: cannot schedule new futures after shutdown with environment {'REQUEST_METHOD': 'GET', 'SCRIPT_NAME': '', 'PATH_INFO': '/_localstack/health', 'QUERY_STRING': '', 'RAW_URI': '/_localstack/health', 'REQUEST_URI': '/_localstack/health', 'SERVER_NAME': '127.0.0.1', 'SERVER_PORT': '4566', 'SERVER_PROTOCOL': 'HTTP/1.1', 'REMOTE_ADDR': '127.0.0.1', 'REMOTE_PORT': '33886', 'HTTP_HOST': 'localhost:4566', 'HTTP_USER_AGENT': 'python-requests/2.28.2', 'HTTP_ACCEPT_ENCODING': 'gzip, deflate', 'HTTP_ACCEPT': '*/*', 'HTTP_CONNECTION': 'keep-alive', 'wsgi.version': (1, 0), 'wsgi.url_scheme': 'http', 'wsgi.errors': <_io.BytesIO object at 0x7f18796dc130>, 'wsgi.multithread': True, 'wsgi.multiprocess': False, 'wsgi.run_once': False, 'asgi.headers': [(b'Host', b'localhost:4566'), (b'User-Agent', b'python-requests/2.28.2'), (b'Accept-Encoding', b'gzip, deflate'), (b'Accept', b'*/*'), (b'Connection', b'keep-alive')], 'wsgi.input': <localstack.http.asgi.HTTPRequestEventStreamAdapter object at 0x7f18796f8a60>, 'wsgi.input_terminated': True}
+2023-02-09T07:04:20.618 ERROR --- [-functhread5] hypercorn.error            : Error in ASGI Framework
+Traceback (most recent call last):
+  File "/opt/code/localstack/.venv/lib/python3.10/site-packages/hypercorn/asyncio/task_group.py", line 22, in _handle
+    await app(scope, receive, send, sync_spawn)
+  File "/opt/code/localstack/.venv/lib/python3.10/site-packages/hypercorn/app_wrappers.py", line 31, in __call__
+    await self.app(scope, receive, send)
+  File "/opt/code/localstack/localstack/aws/serving/asgi.py", line 34, in __call__
+    return await self.wsgi(scope, receive, send)
+  File "/opt/code/localstack/localstack/http/asgi.py", line 344, in __call__
+    return await self.handle_http(scope, receive, send)
+  File "/opt/code/localstack/localstack/http/asgi.py", line 377, in handle_http
+    iterable = await self.event_loop.run_in_executor(
+  File "/usr/local/lib/python3.10/asyncio/base_events.py", line 821, in run_in_executor
+    executor.submit(func, *args), loop=self)
+  File "/usr/local/lib/python3.10/concurrent/futures/thread.py", line 167, in submit
+    raise RuntimeError('cannot schedule new futures after shutdown')
+RuntimeError: cannot schedule new futures after shutdown
+2023-02-09T07:04:20.618 ERROR --- [-functhread5] hypercorn.error            : Error in ASGI Framework
+Traceback (most recent call last):
+  File "/opt/code/localstack/.venv/lib/python3.10/site-packages/hypercorn/asyncio/task_group.py", line 22, in _handle
+    await app(scope, receive, send, sync_spawn)
+  File "/opt/code/localstack/.venv/lib/python3.10/site-packages/hypercorn/app_wrappers.py", line 31, in __call__
+    await self.app(scope, receive, send)
+  File "/opt/code/localstack/localstack/aws/serving/asgi.py", line 34, in __call__
+    return await self.wsgi(scope, receive, send)
+  File "/opt/code/localstack/localstack/http/asgi.py", line 344, in __call__
+    return await self.handle_http(scope, receive, send)
+  File "/opt/code/localstack/localstack/http/asgi.py", line 377, in handle_http
+    iterable = await self.event_loop.run_in_executor(
+  File "/usr/local/lib/python3.10/asyncio/base_events.py", line 821, in run_in_executor
+    executor.submit(func, *args), loop=self)
+  File "/usr/local/lib/python3.10/concurrent/futures/thread.py", line 167, in submit
+    raise RuntimeError('cannot schedule new futures after shutdown')
+RuntimeError: cannot schedule new futures after shutdown

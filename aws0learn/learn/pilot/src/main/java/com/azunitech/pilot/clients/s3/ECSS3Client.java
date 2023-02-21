@@ -138,7 +138,7 @@ public class ECSS3Client {
             return this;
         }
 
-        public ECSS3ClientBuilder endPoint(String endPoint) throws URISyntaxException {
+        public ECSS3ClientBuilder host(String endPoint) throws URISyntaxException {
             if (checkValidate.apply(endPoint)) {
                 throw new URISyntaxException(endPoint, "invalid");
             }
@@ -148,7 +148,7 @@ public class ECSS3Client {
 
         public ECSS3ClientBuilder localStackEndPoint() throws URISyntaxException {
             String host = System.getenv("LOCALSTACK_HOSTNAME");
-            return endPoint(host);
+            return host(host);
         }
 
         public ECSS3Client build() {

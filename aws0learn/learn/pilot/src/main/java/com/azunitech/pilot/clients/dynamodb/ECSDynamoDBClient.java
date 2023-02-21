@@ -269,7 +269,7 @@ public class ECSDynamoDBClient {
             return this;
         }
 
-        public ECSDynamoDBClientBuilder endPoint(String endPoint) throws URISyntaxException {
+        public ECSDynamoDBClientBuilder host(String endPoint) throws URISyntaxException {
             if (checkValidate.apply(endPoint)) {
                 throw new URISyntaxException(endPoint,
                         "invalid");
@@ -281,7 +281,7 @@ public class ECSDynamoDBClient {
 
         public ECSDynamoDBClientBuilder localStackEndPoint() throws URISyntaxException {
             String host = System.getenv("LOCALSTACK_HOSTNAME");
-            return endPoint(host);
+            return host(host);
         }
 
         public ECSDynamoDBClient build() throws URISyntaxException {

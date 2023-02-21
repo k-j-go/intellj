@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.sns.SnsAsyncClient;
 import software.amazon.awssdk.services.sns.SnsClient;
@@ -45,6 +46,9 @@ public class ECSSnsClient {
                         return "FAKE";
                     }
                 }))
+                .httpClient(UrlConnectionHttpClient.builder()
+                        .build())
+
                 .build();
 
         snsAsyncClient = SnsAsyncClient.builder()

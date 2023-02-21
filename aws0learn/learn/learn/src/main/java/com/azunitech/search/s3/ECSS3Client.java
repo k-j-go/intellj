@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
@@ -16,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 @Component
 public class ECSS3Client {
@@ -42,12 +44,16 @@ public class ECSS3Client {
                 .region(region)
                 .endpointOverride(new URI(endpoint))
                 .credentialsProvider(StaticCredentialsProvider.create(awsCreds))
+                .httpClient(UrlConnectionHttpClient.builder()
+                        .build())
                 .build();
     }
 
     public void createBucket(String bucketName) {
-        CreateBucketResponse res = s3Client.createBucket(CreateBucketRequest.builder().bucket(bucketName)
+        CreateBucketResponse res = s3Client.createBucket(CreateBucketRequest.builder()
+                .bucket(bucketName)
                 .build());
+
     }
 
     public void putObject(String bucketName, String objectKey, String msg) {
@@ -63,7 +69,7 @@ public class ECSS3Client {
         PutObjectResponse response = s3Client.putObject(putOb, RequestBody.fromBytes(bytes));
     }
 
-    public  void listBucketObjects(String bucketName ) {
+    public void listBucketObjects(String bucketName) {
 
         try {
             ListObjectsRequest listObjects = ListObjectsRequest
@@ -80,12 +86,13 @@ public class ECSS3Client {
             }
 
         } catch (S3Exception e) {
-            System.err.println(e.awsErrorDetails().errorMessage());
+            System.err.println(e.awsErrorDetails()
+                    .errorMessage());
             System.exit(1);
         }
     }
 
     private static long calKb(Long val) {
-        return val/1024;
+        return val / 1024;
     }
 }

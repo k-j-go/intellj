@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.waiters.WaiterResponse;
+import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.*;
@@ -38,6 +39,9 @@ public class ECSDynamoDBClient {
                 .region(region)
                 .endpointOverride(new URI(endpoint))
                 .credentialsProvider(StaticCredentialsProvider.create(awsCreds))
+                .httpClient(UrlConnectionHttpClient.builder()
+                        .build())
+
                 .build();
 
     }

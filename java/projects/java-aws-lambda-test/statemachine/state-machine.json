@@ -1,0 +1,41 @@
+{
+  "StartAt": "CallLambda",
+  "States": {
+    "CallLambda": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-west-2:000000000000:function:JavaLambda",
+      "Parameters": {
+        "FunctionName": "JavaLambda",
+        "Payload": {
+          "input.$": "$"
+        }
+      },
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "com.azunitech.lambda.InputLengthException"
+          ],
+          "ResultPath": "$.error-info",
+          "Next": "fallback"
+        },
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "Next": "fallback"
+        }
+      ],
+      "Next": "goodnext"
+    },
+    "fallback": {
+      "Type": "Pass",
+      "Result": "Hello, AWS Step Functions gets error!",
+      "End": true
+    },
+    "goodnext": {
+      "Type": "Pass",
+      "Result": "Hello, AWS Step Functions good!",
+      "End": true
+    }
+  }
+}

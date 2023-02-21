@@ -1,10 +1,15 @@
 - [ref for start](https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/setup-project-maven.html)
 - [good](https://docs.aws.amazon.com/lambda/latest/dg/java-handler.html)
 
+#### SDK for RUsT
+[sdk-rust](https://docs.aws.amazon.com/sdk-for-rust/latest/dg/localstack.html)
 
+#### Cloud Function
+[cloud function](https://docs.localstack.cloud/user-guide/integrations/spring-cloud-function/#starting-a-new-project)
 #### Start
 [awssdk](https://github.com/awsdocs/aws-doc-sdk-examples)
-[](https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/setup-project-maven.html)
+[spring cloud function](https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/setup-project-maven.html)
+[spring cloud for s3](https://github.com/mengjiann/aws-lambda-s3)
 ```shell
 mvn -B archetype:generate \
  -DarchetypeGroupId=software.amazon.awssdk \
@@ -78,4 +83,17 @@ mvn archetype:generate \
 -DgroupId=com.azunitech.mynativeimageapp \
 -DartifactId=mynativeimageapp \
 -DinteractiveMode=false
+```
+
+```shell
+http -d https://start.spring.io/starter.zip type==maven-project \
+language==java \
+bootVersion==2.4.5 \
+baseDir==springFunclambda \
+groupId==com.azunitech.search \
+artifactId==springFunclambda \
+name==springFunclambda \
+packageName==com.azunitech.search \
+javaVersion==1.8 \
+dependencies==web,webflux,okta,lombok
 ```

@@ -1,0 +1,44 @@
+{
+  "Comment": "A step function to test some lambda functions in Go",
+  "StartAt": "LambdaFuncOne",
+  "States": {
+    "LambdaFuncOne": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:000000000000:function:LambdaOne",
+      "TimeoutSeconds": 300,
+      "HeartbeatSeconds": 60,
+      "Next": "wait-10-secords"
+    },
+    "wait-10-secords": {
+      "Type": "Wait",
+      "Seconds": 5,
+      "Next": "LambdaFuncTwo"
+    },
+    "LambdaFuncTwo": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:000000000000:function:LambdaTwo",
+      "Next": "ChoiceState"
+    },
+    "ChoiceState": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.status",
+          "NumericGreaterThanEquals": 50,
+          "Next": "LambdaFuncThree"
+        }
+      ],
+      "Default": "LambdaFuncFour"
+    },
+    "LambdaFuncThree": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:000000000000:function:LambdaThree",
+      "End": true
+    },
+    "LambdaFuncFour": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:000000000000:function:LambdaFour",
+      "End": true
+    }
+  }
+}

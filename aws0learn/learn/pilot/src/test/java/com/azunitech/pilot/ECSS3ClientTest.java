@@ -11,11 +11,11 @@ public class ECSS3ClientTest {
     public void generalTest() throws URISyntaxException {
         ECSS3Client ecsClient = ECSS3Client.builder()
                 .region(Region.US_EAST_1)
-                .endPoint("http://127.0.0.1:4566")
+                .host("127.0.0.1")
                 .build();
 
-//        ecsClient.createBucket("test");
-//        ecsClient.listBucketObjects("test");
+        ecsClient.createBucket("test");
+        ecsClient.listBucketObjects("test");
 
     }
 

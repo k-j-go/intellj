@@ -124,7 +124,7 @@ public class ECSSnsClient {
             return this;
         }
 
-        public ECSSnsClientBuilder endPoint(String endPoint) throws URISyntaxException {
+        public ECSSnsClientBuilder host(String endPoint) throws URISyntaxException {
             if (checkValidate.apply(endPoint)) {
                 throw new URISyntaxException(endPoint, "invalid");
             }
@@ -134,7 +134,7 @@ public class ECSSnsClient {
 
         public ECSSnsClientBuilder localStackEndPoint() throws URISyntaxException {
             String host = System.getenv("LOCALSTACK_HOSTNAME");
-            return endPoint(host);
+            return host(host);
         }
 
         public ECSSnsClient build() throws URISyntaxException {

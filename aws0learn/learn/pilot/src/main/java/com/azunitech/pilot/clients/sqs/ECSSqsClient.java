@@ -194,7 +194,7 @@ public class ECSSqsClient {
             return this;
         }
 
-        public ECSSqsClientBuilder endPoint(String endPoint) throws URISyntaxException {
+        public ECSSqsClientBuilder host(String endPoint) throws URISyntaxException {
             if (checkValidate.apply(endPoint)) {
                 throw new URISyntaxException(endPoint, "invalid");
             }
@@ -204,7 +204,7 @@ public class ECSSqsClient {
 
         public ECSSqsClientBuilder localStackEndPoint() throws URISyntaxException {
             String host = System.getenv("LOCALSTACK_HOSTNAME");
-            return endPoint(host);
+            return host(host);
         }
 
         public ECSSqsClient build() throws URISyntaxException {

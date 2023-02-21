@@ -1,0 +1,32 @@
+services:
+  portainer:
+    image: portainer/portainer
+    networks:
+      - dc1ring
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./portainer-data:/data
+    # Enable you to access potainers web interface from your host machine
+    # using http://localhost:10001
+    ports:
+      - "10001:9000"
+
+
+  java:
+    image: java-aws-lambda-custom-image
+    entrypoint: /aws-lambda/aws-lambda-rie
+    command: /opt/java/openjdk/bin/java -cp '/function/*' com.amazonaws.services.lambda.runtime.api.client.AWSLambda com.azunitech.lambda.HandlerInteger
+    depends_on:
+      - portainer
+    volumes:
+      - ~/.aws-lambda-rie:/aws-lambda
+    ports:
+      - 9000:8080
+    networks:
+      - dc1ring
+    environment:
+      ENV: "local"
+      REGION: "east"
+
+networks:
+  dc1ring:

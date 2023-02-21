@@ -8,6 +8,7 @@ import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.kinesis.KinesisClient;
 import software.amazon.awssdk.services.kinesis.model.*;
+import software.amazon.awssdk.services.kinesis.model.Record;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -194,7 +195,7 @@ public class ECSKinesisClient {
             return this;
         }
 
-        public ECSKinesisClientBuilder endPoint(String endPoint) throws URISyntaxException {
+        public ECSKinesisClientBuilder host(String endPoint) throws URISyntaxException {
             if (checkValidate.apply(endPoint)) {
                 throw new URISyntaxException(endPoint,
                         "invalid");
@@ -206,7 +207,7 @@ public class ECSKinesisClient {
 
         public ECSKinesisClientBuilder localStackEndPoint() throws URISyntaxException {
             String host = System.getenv("LOCALSTACK_HOSTNAME");
-            return endPoint(host);
+            return host(host);
         }
 
         public ECSKinesisClient build() throws URISyntaxException {

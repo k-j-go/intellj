@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.*;
@@ -35,6 +36,9 @@ public class ECSSqsClient {
                 .region(region)
                 .endpointOverride(new URI(endpoint))
                 .credentialsProvider(StaticCredentialsProvider.create(awsCreds))
+                .httpClient(UrlConnectionHttpClient.builder()
+                        .build())
+
                 .build();
     }
 

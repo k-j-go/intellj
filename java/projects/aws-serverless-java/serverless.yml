@@ -1,0 +1,26 @@
+service: serverless-java
+
+provider:
+  name: aws
+  runtime: java8
+  memorySize: 512
+  timeout: 10
+  stage: ${self:custom.myStage}
+  region: ${self:custom.myRegion}
+  logRetentionInDays: 14
+
+package:
+  artifact: target/aws-serverless-java-0.0.1-SNAPSHOT-aws.jar
+
+functions:
+  notification-server:
+    handler: "com.example.serverless.LambdaHandler::handleRequest"
+    name: ${self:custom.myStage}-${self:service}
+    description: "serverless java"
+    events:
+      - http:  'ANY {proxy+}'
+
+custom:
+  myRegion: ${opt:region, 'us-east-1'}
+  myStage: ${opt:stage, 'dev'}
+

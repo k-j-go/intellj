@@ -1,0 +1,20 @@
+{
+  "version": "20.0.0",
+  "files": {
+    "31d00d24d7dcece4e7f2cad550c47dda915f2c193ea5143891fbbf46d65c732f": {
+      "source": {
+        "path": "MyWidgetServiceStack.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "000000000000-us-east-1": {
+          "bucketName": "cdk-hnb659fds-assets-000000000000-us-east-1",
+          "objectKey": "31d00d24d7dcece4e7f2cad550c47dda915f2c193ea5143891fbbf46d65c732f.json",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::000000000000:role/cdk-hnb659fds-file-publishing-role-000000000000-us-east-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

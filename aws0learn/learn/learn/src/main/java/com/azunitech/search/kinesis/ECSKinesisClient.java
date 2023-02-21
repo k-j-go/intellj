@@ -6,10 +6,12 @@ import org.springframework.stereotype.Component;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.SdkBytes;
+import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.kinesis.KinesisAsyncClient;
 import software.amazon.awssdk.services.kinesis.KinesisClient;
 import software.amazon.awssdk.services.kinesis.model.*;
+import software.amazon.awssdk.services.kinesis.model.Record;
 
 import javax.annotation.PostConstruct;
 import java.net.URI;
@@ -37,6 +39,9 @@ public class ECSKinesisClient {
                 .region(region)
                 .endpointOverride(new URI(endpoint))
                 .credentialsProvider(StaticCredentialsProvider.create(awsCreds))
+                .httpClient(UrlConnectionHttpClient.builder()
+                        .build())
+
                 .build();
     }
 
